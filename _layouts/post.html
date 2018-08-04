@@ -1,46 +1,39 @@
-<!DOCTYPE html>
-<html lang="en" itemscope itemtype="http://schema.org/BlogPosting">
-    {% include head.html %}
-    <body class="has-push-menu">
-        {% include minutes-to-read.html %}
-        {% include svg-icons.html %}
-        {% include header.html %}
-        <section class="post">
+---
+layout: default
+---
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-            <article role="article" id="post" class="post-content" itemprop="articleBody">
-                <p itemprop="post-info" class="post-info">
-                    {% if page.date %}
-                        <svg id="date" class="icon-calendar"><use xlink:href="#icon-calendar"></use></svg>
-                        <time itemprop="datePublished" datetime="{{ page.date | date_to_xmlschema }}" class="date">
-                            {% include date.html date=page.date %}
-                        </time>
-                    {% endif %}
-                    <svg id="clock" class="icon-clock"><use xlink:href="#icon-clock"></use></svg>
-                    <span>{{ minutesText }}</span>
-                </p>
-                <h1 class="post-title" itemprop="name">{{ page.title }}</h1>
-                <p itemprop="description" class="subtitle">{{ page.description }}</p>
+    <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">{{ page.title }}</h1>
+        <p class="post-meta"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time> {% if page.author %}<span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">/ {{ page.author }}</span></span>{% endif %}{% if page.tags != null %}/
+            {% assign projectTags = site.data.tags.allowed-tags %}
+            {% for tag in page.tags %}
+            {% if projectTags contains tag %}
+            <a href="{{ "tag_" | append: tag | append: ".html"}}">{{tag}}</a>{% unless forloop.last %}, {% endunless%}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
 
-                {% if page.image %}
-                    <img src="{{ page.image }}" alt="Imagem de capa" class="post-cover">
-                {% endif %}
+        </p>
 
-                {{ content }}
-            </article>
 
-            <div class="progress-bar" data-minutes="{{ totalMinutes }}">
-                <span class="time-completed"></span>
-                <span class="time-remaining"></span>
-                <div class="bar">
-                    <span class="completed" style="width:0%;"></span>
-                    <span class="remaining" style="width:100%;"></span>
-                </div>
-            </div>
+    </header>
 
-            {% include share.html %}
-            {% include author.html %}
-            {% include comments.html %}
-            {% include footer.html %}
-        </section>
-    </body>
-</html>
+    <div class="post-content" itemprop="articleBody">
+
+        {% if page.summary %}
+        <div class="summary">{{page.summary}}</div>
+        {% endif %}
+
+        {{ content }}
+    </div>
+
+
+
+</article>
+
+{% include disqus.html %}
+
+{{site.data.alerts.hr_shaded}}
+
+{% include footer.html %}
