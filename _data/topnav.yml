@@ -3,10 +3,8 @@
 topnav:
 - title: Topnav
   items:
-    - title: GitHub
-      external_url: https://github.com/tomjoht/documentation-theme-jekyll
-    - title: Blog
-      url: /blog
+    - title: Bài viết
+      url: /news
 
 #Topnav dropdowns
 topnav_dropdowns:
