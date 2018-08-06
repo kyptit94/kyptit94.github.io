@@ -9,7 +9,7 @@ summary: Đây là series bài viết hướng dẫn lập trình web cho các b
 
 ## 5 lý do tại sao bạn nên học lập trình Web
 
-Dưới đây là 7 lý do vì sao lập trình web, cho đến thời điểm hiện tại vẫn chưa bao giờ hết HOT.
+Dưới đây là 5 lý do vì sao lập trình web, cho đến thời điểm hiện tại vẫn chưa bao giờ hết HOT.
 
 ### 1. Cơ hội việc làm
 
