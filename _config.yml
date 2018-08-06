@@ -12,16 +12,16 @@ site_title: Kỳ Phạm Website | Hướng dẫn lập trình
 company_name: K
 # this appears in the footer
 
-github_editme_path: tomjoht/documentation-theme-jekyll/blob/gh-pages/
+github_editme_path:
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
 # gitlab_editme_path: tomjoht/documentation-theme-jekyll/blob/gh-pages/
 # if you're using GitLab, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
-disqus_shortname: idratherbewriting
+disqus_shortname: kypham-com-2
 # if you're using disqus for comments, add the shortname here. if not, leave this value blank.
 
-google_analytics: UA-66296557-1
+google_analytics: 
 # if you have google-analytics ID, put it in. if not, edit this value to blank.
 
 host: 127.0.0.1
@@ -35,9 +35,9 @@ exclude:
   - .gitignore
 # these are the files and directories that jekyll will exclude from the build
 
-feedback_subject_line: Jekyll documentation theme
+feedback_subject_line: Kypham.com
 
-feedback_email: tomjoht@gmail.com
+feedback_email: kyptit94@gmail.com
 # used as a contact email for the Feedback link in the top navigation bar
 
 # feedback_disable: true
@@ -107,7 +107,7 @@ sidebars:
 - product2_sidebar
 - other
 
-description: "Intended as a documentation theme based on Jekyll for technical writers documenting software and other technical products, this theme has all the elements you would need to handle multiple products with both multi-level sidebar navigation, tags, and other documentation features."
+description: "Kypham.com là website phi lợi nhuận giúp các bạn đam mê lập trình web có thể tự học."
 # the description is used in the feed.xml file
 
 # needed for sitemap.xml file only
