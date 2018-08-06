@@ -1,7 +1,7 @@
 ---
 title: "Hướng dẫn lập trình web cơ bản"
 keywords: Hướng dẫn lập trình web
-tags: [getting_started]
+tags: [5 lý do nên học lập trình web]
 sidebar: mydoc_sidebar
 permalink: index.html
 summary: Đây là series bài viết hướng dẫn lập trình web cho các bạn mới bắt đầu và chưa có kiến thức về lập trình.Mục tiêu của loạt bài viết hướng dẫn này là các bạn có thể đi làm sau khi hoàn thành Series này.Nếu có khó khăn trong quá trình học các bạn có thể comment ở phía dưới.

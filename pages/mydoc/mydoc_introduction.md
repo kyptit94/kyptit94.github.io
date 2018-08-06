@@ -1,30 +1,26 @@
 ---
-title: Introduction
+title: Cài đặt môi trường
 sidebar: mydoc_sidebar
-permalink: mydoc_introduction.html
+permalink: cai-dat-moi-truong.html
 folder: mydoc
 ---
 
-## Overview
+Để bắt đầu lập trình web. Các bạn cần cài đặt một vài các công cụ cần thiết
 
-This site provides documentation, training, and other notes for the Jekyll Documentation theme. There's a lot of information about how to do a variety of things here, and it's not all unique to this theme. But by and large, understanding how to do things in Jekyll depends on how your theme is coded. As a result, these additional details are provided.
+## Hệ điều hành Ubuntu
 
-The instructions here are geared towards technical writers working on documentation. You may have a team of one or more technical writers working on documentation for multiple projects. You can use this same theme to author all of your documentation for each of your products. The theme is built to accommodate documentation for multiple products on the same site.
+Dùng Ubuntu rất tiện cho các Developer trong việc cài đặt môi trường cũng như là để làm quen với linux. Sau nếu có dùng đến các máy chủ Server thì các bạn cũng bớt bỡ ngỡ.
 
-## Survey of features
+Để cân bằng giữa giải trí và học tập thì các bạn nên cài đặt song song Ubuntu và Window bằng phần mềm Wubi.
 
-Some of the more prominent features of this theme include the following:
+[How to install Ubuntu with Wubi](https://help.ubuntu.com/community/Wubi)
 
-* Bootstrap framework
-* [Navgoco multi-level sidebar](http://www.komposta.net/article/navgoco) for table of contents
-* Ability to specify different sidebars for different products
-* Top navigation bar with drop-down menus
-* Notes, tips, and warning information notes
-* Tags for alternative navigation
-* Advanced landing page layouts from the [Modern Business theme](http://startbootstrap.com/template-overviews/modern-business/).
+## Trình soạn thảo Sublime Text
 
-## Getting started
+Chọn trình soạn thảo để lập trình ở đây tôi chọn Sublime Text.
 
-To get started, see [Getting Started][index].
+[Download Sublime Text 3]](https://www.sublimetext.com/3).
 
-{% include links.html %}
+
+
+
