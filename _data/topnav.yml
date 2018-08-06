@@ -3,8 +3,8 @@
 topnav:
 - title: Topnav
   items:
-    - title: Bài viết
-      url: /news
+    - title: Bl
+      url: /blog
 
 #Topnav dropdowns
 topnav_dropdowns:
