@@ -3,7 +3,7 @@
 topnav:
 - title: Topnav
   items:
-    - title: Bl
+    - title: Blog
       url: /blog
 
 #Topnav dropdowns
