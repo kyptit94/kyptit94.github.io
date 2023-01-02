@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Laravel for E-Commerce - Start</title>
+      <link href="/php/laravel-ecommerce-website-tutorial-1.html"/>
+      <url>/php/laravel-ecommerce-website-tutorial-1.html</url>
+      
+        <content type="html"><![CDATA[<p><img src="/images/laravel-ecommerce.jpg" alt="laravel-ecomerce text"></p><h2 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h2><p>Nowaday, e-commerce business growing fast and this is a chance for developer to earn money from it. If you are PHP developer and want to build an e-commerce website by yourself using Laravel framework, here is tutorial for you.</p><h2 id="What-is-e-commerce"><a href="#What-is-e-commerce" class="headerlink" title="What is e-commerce?"></a>What is e-commerce?</h2><p>E-commerce (electronic commerce) is the buying and selling of goods and services, or the transmitting of funds or data, over an electronic network, primarily the internet. These business transactions occur either as business-to-business (B2B), business-to-consumer (B2C), consumer-to-consumer or consumer-to-business.</p><h2 id="Why-using-Laravel"><a href="#Why-using-Laravel" class="headerlink" title="Why using Laravel?"></a>Why using Laravel?</h2><h3 id="Simplicity"><a href="#Simplicity" class="headerlink" title="Simplicity"></a>Simplicity</h3><p>It´s easy to learn Laravel, and that’s a big plus. Developers don’t want to get bogged down in complex, messy code. And businesses definitely don’t want to wait around for their new web application. </p><p>Laravel has an expressive and elegant syntax that is simple for even inexperienced programmers. The framework is based on the model-view-controller (MVC) architectural pattern that facilitates the management of complex and large-scale projects. It also offers a wide range of libraries, tools, and templates. This helps developers build stable web applications while maintaining flexibility.</p><h3 id="Blade-and-Artisan"><a href="#Blade-and-Artisan" class="headerlink" title="Blade and Artisan"></a>Blade and Artisan</h3><p>Blade is Laravel’s built-in and lightweight template engine, which allows developers to create a web page easily using dynamic content seeding. This tool is highly intuitive and also provides multiple widgets to ensure a web application has a robust and stable structure. </p><p>Artisan is Laravel’s powerful built-in command line tool, which helps automate repetitive tasks and manage database migration. It also gives devs the opportunity to create their own custom commands and perform tests in the development environment. </p><h3 id="Advanced-Integrated-Features"><a href="#Advanced-Integrated-Features" class="headerlink" title="Advanced Integrated Features"></a>Advanced Integrated Features</h3><p> Laravel also offers intuitive, pre-programmed systems that can be easily added into an application with just a few lines of code. These ‘packages’ can be Laravel-specific or used across PHP frameworks, but are easy to install using Composer. </p><p>Laravel Cashier, for example, is a built-in subscription billing feature that handles all the boilerplate code. Socialite is a simplified authentication mechanism for social sites such as Facebook and Google. With a modular framework and an impressive array of packages, developers can easily and seamlessly add functionality to web applications. </p><h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a>Security</h3><p>This is one of the main considerations for any web framework. While none are 100% secure, Laravel has strong credentials. Its in-built CSRF token can handle all kinds of online threats, protecting the web application against the most serious cybersecurity risks (e.g. SQL injection) The framework’s security ecosystem also includes strong community support and tutorials to help developers build water-tight Laravel applications.</p><h3 id="Testing"><a href="#Testing" class="headerlink" title="Testing"></a>Testing</h3><p>Laravel is designed to integrate testing quickly and seamlessly into any web development process. It comes with built-in testing functions and support through PHPUnit. This makes it easy to identify and correct any bugs before they become a costly problem. The system automatically sets the testing environment, but developers can easily define other testing configuration values as necessary.</p><h3 id="Community-amp-Support"><a href="#Community-amp-Support" class="headerlink" title="Community &amp; Support"></a>Community &amp; Support</h3><p>The growing popularity and usage of Laravel over the last decades means that it now has a large and active community of experienced developers able to provide valuable support when required. A developer that reports bugs or security problems is likely to get a quick response from the community, helping to cut down on delays and costs. Laravel also offers numerous screencast tutorials, called ‘Laracasts’, that educate and guide developers. </p>]]></content>
+      
+      
+      <categories>
+          
+          <category> php </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
