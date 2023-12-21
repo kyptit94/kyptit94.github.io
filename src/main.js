@@ -7,6 +7,13 @@ import Vssue from 'vssue'
 import Fuse from 'fuse.js'
 import GithubV4 from '@vssue/api-github-v4'
 
+import VueMarkdownEditor from '@kangc/v-md-editor';
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
+import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
+import enUS from '@kangc/v-md-editor/lib/lang/en-US';
+import Prism from 'prismjs';
+
 export default function (Vue, { router, head, isClient }) {
   // Set default layout as a global component
   Vue.component('Layout', DefaultLayout)
@@ -29,6 +36,14 @@ export default function (Vue, { router, head, isClient }) {
     perPage: process.env.VSSUE_GRIDSOME_PERPAGE || 15,
     autoCreateIssue: process.env.GRIDSOME_VSSUE_OWNER || false,
   })
+
+  VueMarkdownEditor.use(vuepressTheme, {
+    Prism,
+  });
+
+  VueMarkdownEditor.lang.use('en-US', enUS);
+  
+  Vue.use(VueMarkdownEditor);
 
   // Add vue filter to capitalise the first letter of each word
   Vue.filter('capitalise', function (value) {

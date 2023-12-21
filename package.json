@@ -3,9 +3,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "gridsome build",
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider gridsome develop",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider gridsome build",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "NODE_OPTIONS=--openssl-legacy-provider gh-pages -d dist",
     "develop": "NODE_OPTIONS=--openssl-legacy-provider gridsome develop",
     "explore": "gridsome explore"
   },
@@ -14,7 +15,9 @@
     "@gridsome/source-filesystem": "^0.6.2",
     "@gridsome/transformer-remark": "^0.6.4",
     "@gridsome/vue-remark": "^0.2.6",
+    "@kangc/v-md-editor": "^1.7.12",
     "@vssue/api-github-v4": "^1.4.7",
+    "cross-env": "^7.0.3",
     "fuse.js": "^6.4.6",
     "gh-pages": "^3.2.3",
     "gridsome": "^0.7.0",
