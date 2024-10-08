@@ -1,0 +1,1 @@
+.equal-height-cards{display:flex}.equal-height-cards>.n-card{flex:1;display:flex;flex-direction:column}.equal-height-cards>.n-card .n-space{flex:1}
