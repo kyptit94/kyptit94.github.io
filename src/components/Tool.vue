@@ -1,6 +1,6 @@
 <template>
   <n-space vertical>
-    <n-card title="Gửi tin nhắn FB Version 1.1.6">
+    <n-card title="Gửi tin nhắn FB Version 1.2.4">
       <n-space vertical>
         <n-card>
           <n-space>
@@ -8,22 +8,14 @@
             <n-button v-if="loginStatus" type="primary" @click="getListPages">Lấy danh sách trang</n-button>
           </n-space>
         </n-card>
-        <div class=".equal-height-cards">
-          <n-space>
-            <n-card>
-              <n-space vertical>
-                <n-input v-model:value="img" type="text" placeholder="Link ảnh" />
-                <n-input v-model:value="message" type="textarea" placeholder="Nội dung tin nhắn" />
-              </n-space>
-            </n-card>
-            <n-card>
-              <n-space vertical>
-                <n-image width="300" :src="img" />
-                <n-text>{{ message }}</n-text>
-              </n-space>
-            </n-card>
+        <n-card>
+          <n-space vertical>
+            <n-upload :on-update:file-list="UpdateFile" list-type="image-card">
+              Tải ảnh lên
+            </n-upload>
+            <n-input autosize v-model:value="message" type="textarea" placeholder="Nội dung tin nhắn" />
           </n-space>
-        </div>
+        </n-card>
       </n-space>
     </n-card>
     <n-card title="Danh sách trang">
@@ -38,7 +30,29 @@ import {
   NButton, NList, NListItem, NSpace, NDataTable, NInput, NCard, NImage, NText,
   useNotification, useMessage,
 } from 'naive-ui'
-import { h } from 'vue'
+import { h, ref } from 'vue'
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'firebase/app';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB3-qhi7iQKjNMiPW7BxDB7qq3nCZ6EyIg",
+  authDomain: "sendmessage-77d09.firebaseapp.com",
+  projectId: "sendmessage-77d09",
+  storageBucket: "sendmessage-77d09.appspot.com",
+  messagingSenderId: "244801679333",
+  appId: "1:244801679333:web:17f9ab0930e8693dbdc90c",
+  measurementId: "G-H6XEVYSJVT"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
 
 export default {
   name: 'App',
@@ -56,6 +70,29 @@ export default {
   setup() {
     const message = useMessage()
     const notification = useNotification()
+    const file = ref(null)
+    const imageUrl = ref('');
+
+    const uploadImage = async () => {
+      return new Promise(async (resolve) => {
+        if (!file.value) {
+          alert('Please select a file first.');
+          return;
+        }
+
+        const fileRef = storageRef(storage, "/images/guitinnhan.png");
+
+        try {
+          await uploadBytes(fileRef, file.value);
+          const url = await getDownloadURL(fileRef);
+          imageUrl.value = url;
+          console.log('File available at', url);
+        } catch (error) {
+          console.error('Error uploading file:', error);
+        }
+        resolve(imageUrl.value)
+      })
+    };
     return {
       notify(text) {
         notification.create({
@@ -63,13 +100,24 @@ export default {
           content: text,
           type: 'success'
         })
-      }
+      },
+      async UpdateFile(fileList) {
+        if (fileList.length > 0 && fileList[0].file) {
+          file.value = fileList[0].file
+        } else {
+          file.value = null
+        }
+      },
+      file,
+      imageUrl,
+      uploadImage
     }
   },
   data() {
     return {
       user: null,
-      pages: [],
+      pages: [
+      ],
       message: '',
       img: '',
       count: 0,
@@ -106,6 +154,9 @@ export default {
     }
   },
   methods: {
+    async testUpload() {
+      console.log(await this.uploadImage())
+    },
     loadFacebookSDK() {
       return new Promise((resolve) => {
         if (document.getElementById('facebook-jssdk')) {
@@ -147,7 +198,7 @@ export default {
     },
     async getListPages() {
       FB.api(
-        '/me/accounts',
+        '/me/accounts?limit=200',
         'GET',
         {},
         (response) => {
@@ -158,14 +209,14 @@ export default {
     formatMessage(msg) {
       let message = msg
       const stringIcon = message.match(/{(.*?)}/g) || [];
-      if(stringIcon.length > 0) {
+      if (stringIcon.length > 0) {
         let temp = stringIcon[0]
         let listIcon = temp.split('|')
         let iconId = 0
         stringIcon.forEach(() => {
           let currentIcon = listIcon[iconId].replace('{', '').replace('}', '')
           message = message.replace(temp, currentIcon)
-          if(iconId == listIcon.length - 1) {
+          if (iconId == listIcon.length - 1) {
             iconId = 0
           } else {
             iconId++
@@ -179,38 +230,39 @@ export default {
     },
     async getPageConversations(page) {
       this.count = 0;
+      await this.uploadImage()
       return new Promise(async (resolve) => {
         try {
-        const limit = 100; // Specify the number of records per page
-        let nextPage = `/${page.id}/conversations?limit=${limit}&`;
-        const access_token = page.access_token; // Ensure access_token is correctly assigned
-        const fields = 'id,participants';
-        while (nextPage) {
-          await new Promise((resolve) => {
-            FB.api(nextPage, 'GET', { access_token, fields }, async (response) => { // Pass access_token in the API call
-              if (response && !response.error) {
-                let users = response.data.map((conversation) => {
-                  return conversation.participants.data.find((participant) => participant.id !== page.id);
-                });
-                for (const user of users) {
-                  if(user && user.id) {
-                    this.count++;
-                    await this.sendMessageToAllConversations(page.id, user.id, access_token);
+          const limit = 100; // Specify the number of records per page
+          let nextPage = `/${page.id}/conversations?limit=${limit}&`;
+          const access_token = page.access_token; // Ensure access_token is correctly assigned
+          const fields = 'id,participants';
+          while (nextPage) {
+            await new Promise((resolve) => {
+              FB.api(nextPage, 'GET', { access_token, fields }, async (response) => { // Pass access_token in the API call
+                if (response && !response.error) {
+                  let users = response.data.map((conversation) => {
+                    return conversation.participants.data.find((participant) => participant.id !== page.id);
+                  });
+                  for (const user of users) {
+                    if (user && user.id) {
+                      this.count++;
+                      await this.sendMessageToAllConversations(page.id, user.id, access_token);
+                    }
                   }
+                  // await this.sendMessageToAllConversations(page.id,response.data, access_token);
+                  nextPage = response.paging && response.paging.next ? response.paging.next : null;
+                  resolve();
+                } else {
+                  console.error('Error fetching conversations:', response.error);
+                  nextPage = null;
+                  resolve();
                 }
-                // await this.sendMessageToAllConversations(page.id,response.data, access_token);
-                nextPage = response.paging && response.paging.next ? response.paging.next : null;
-                resolve();
-              } else {
-                console.error('Error fetching conversations:', response.error);
-                nextPage = null;
-                resolve();
-              }
+              });
             });
-          });
-        }
-        this.notify('Đã gửi tin nhắn cho tất cả người dùng');
-        resolve();
+          }
+          this.notify('Đã gửi tin nhắn cho tất cả người dùng');
+          resolve();
         } catch (error) {
           console.error('Error fetching conversations:', error);
           resolve();
@@ -245,7 +297,7 @@ export default {
           }
         );
       });
-      if (this.img) {
+      if (this.imageUrl) {
         await new Promise((resolve) => {
           console.log(`Sending photo to conversation ${part_id}...`);
           resolve();
@@ -257,7 +309,7 @@ export default {
                 attachment: {
                   type: "image",
                   payload: {
-                    url: this.img,
+                    url: this.imageUrl,
                     is_reusable: true
                   }
                 }
