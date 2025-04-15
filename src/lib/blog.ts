@@ -40,6 +40,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
             excerpt: data.excerpt,
             coverImage: data.coverImage,
             tags: data.tags,
+            content: content,
             category: data.category || 'Uncategorized',
           };
         })

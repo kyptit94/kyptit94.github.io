@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
+import Image from 'next/image';
 
 interface Post {
   slug: string;
   title: string;
   date: string;
-  description: string;
-  coverImage: string;
+  coverImage?: string;
   category: string;
-  tags: string[];
+  tags?: string[];
   excerpt: string;
 }
 
@@ -19,53 +19,41 @@ interface BlogListProps {
   initialPosts: Post[];
 }
 
-const POSTS_PER_PAGE = 6;
-
 export default function BlogList({ initialPosts }: BlogListProps) {
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [visiblePosts, setVisiblePosts] = useState<Post[]>(initialPosts.slice(0, 6));
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { ref, inView } = useInView({
+  const { ref } = useInView({
     threshold: 0,
   });
 
+  const loadMorePosts = () => {
+    if (loading) return; // Prevent multiple loads
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      const nextPage = page + 1;
+      const newPosts = initialPosts.slice(0, nextPage * 6); // Load 6 more posts per page
+      setVisiblePosts(newPosts);
+      setPage(nextPage);
+    }, 1000); // Simulate loading time
+    
+  };
+
   useEffect(() => {
-    const loadMorePosts = async () => {
-      if (inView && !loading && hasMore) {
-        setLoading(true);
-        try {
-          // Simulate API call with delay
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          
-          const nextPage = page + 1;
-          const start = (nextPage - 1) * POSTS_PER_PAGE;
-          const end = start + POSTS_PER_PAGE;
-          
-          // Replace this with your actual API call
-          const response = await fetch(`/api/posts?page=${nextPage}`);
-          const newPosts = await response.json();
-          
-          if (newPosts.length === 0) {
-            setHasMore(false);
-          } else {
-            setPosts(prevPosts => [...prevPosts, ...newPosts]);
-            setPage(nextPage);
-          }
-        } catch (error) {
-          console.error('Error loading more posts:', error);
-        } finally {
-          setLoading(false);
-        }
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        loadMorePosts();
       }
     };
 
-    loadMorePosts();
-  }, [inView, loading, hasMore, page]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [page, initialPosts]);
 
   return (
     <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
-      {posts.map((post) => (
+      {visiblePosts.map((post) => (
         <Link
           key={post.slug}
           href={`/blog/${post.slug}`}
@@ -73,7 +61,7 @@ export default function BlogList({ initialPosts }: BlogListProps) {
         >
           {post.coverImage && (
             <div className="relative h-full w-full bg-gray-100 dark:bg-gray-800">
-              <img
+              <Image
                 src={post.coverImage}
                 alt={post.title}
                 className="object-cover h-full w-full transition-transform group-hover:scale-105"

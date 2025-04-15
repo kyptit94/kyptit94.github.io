@@ -20,6 +20,7 @@ export default function ClientImage(props: ClientImageProps) {
   return (
     <Image
       {...props}
+      alt={props.alt}
       fill
       onError={() => setIsLoaded(false)}
     />

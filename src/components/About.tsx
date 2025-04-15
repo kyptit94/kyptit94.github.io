@@ -43,13 +43,13 @@ export default function About() {
               viewport={{ once: true }}
             >
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
-                I'm a passionate developer with a strong foundation in modern web technologies.
+                I am a passionate developer with a strong foundation in modern web technologies.
                 My journey in software development started with a curiosity about how things
                 work on the web, and it has evolved into a professional career where I create
                 elegant solutions to complex problems.
               </p>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                When I'm not coding, you can find me exploring new technologies, contributing
+                When I am not coding, you can find me exploring new technologies, contributing
                 to open-source projects, or sharing my knowledge with the developer community
                 through blog posts and mentoring.
               </p>

@@ -22,7 +22,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            Hi, I'm <span className="text-blue-600 dark:text-blue-400">Kevin</span> <span className="text-sm text-gray-900 dark:text-white">( Phạm Cao Kỳ )</span>
+            Hi, I am <span className="text-blue-600 dark:text-blue-400">Kevin</span> <span className="text-sm text-gray-900 dark:text-white">( Phạm Cao Kỳ )</span>
           </motion.h1>
           
           <motion.p 

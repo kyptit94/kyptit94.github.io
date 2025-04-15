@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const projects = [
   {
@@ -77,7 +78,7 @@ export default function Projects() {
             >
               <div className="aspect-video bg-gray-200 dark:bg-gray-700">
                 {project.image ? (
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                  <Image src={project.image} alt={project.title} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-500" />
                 )}

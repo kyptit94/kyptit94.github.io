@@ -55,7 +55,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
             {post.title}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400">
-            {post.description}
+            {post.excerpt}
           </p>
           <time className="block text-gray-500 dark:text-gray-400">
             {new Date(post.date).toLocaleDateString('en-US', {

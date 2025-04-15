@@ -38,7 +38,7 @@ export default function Contact() {
               Get in Touch
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Have a question or want to work together? I'd love to hear from you.
+              Have a question or want to work together? I would love to hear from you.
             </p>
           </div>
 

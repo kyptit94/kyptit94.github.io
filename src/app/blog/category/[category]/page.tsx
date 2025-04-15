@@ -1,6 +1,4 @@
 import { getBlogCategories, getBlogPostsByCategory } from '@/lib/blog';
-import Link from 'next/link';
-import Image from 'next/image';
 import BlogCategories from '@/components/BlogCategories';
 import BlogList from '@/components/BlogList';
 
@@ -35,7 +33,7 @@ export default async function CategoryPage({
       <BlogCategories categories={categories} activeCategory={params.category} />
 
       {/* Blog Posts Grid */}
-      <BlogList initialPosts={posts.slice(0, 6)} />
+      <BlogList initialPosts={posts} />
     </div>
   );
 }

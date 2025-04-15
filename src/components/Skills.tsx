@@ -40,7 +40,7 @@ export default function Skills() {
             Skills & Expertise
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Here's what I bring to the table
+            Here is what I bring to the table
           </p>
         </motion.div>
 

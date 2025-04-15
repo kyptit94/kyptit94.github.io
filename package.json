@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "export": "next export",
-    "deploy": "next build && next export && npx next-deploy"
+    "deploy": "npm run build && gh-pages -d out"
   },
+  "homepage": "https://kyptit94.github.io",
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",

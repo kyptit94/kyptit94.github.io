@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
+import Image from 'next/image';
 
 interface BlogProps {
   posts: BlogPost[];
@@ -40,7 +41,7 @@ export default function Blog({ posts }: BlogProps) {
               >
                 {post.coverImage && (
                   <div className="relative h-48 w-full overflow-hidden">
-                    <img
+                    <Image
                       src={post.coverImage}
                       alt={post.title}
                       className="object-cover w-full h-full transform hover:scale-105 transition-transform duration-300"
