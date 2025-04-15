@@ -1,0 +1,211 @@
+---
+title: "Laravel Coding Standards and Best Practices: A Developer’s Guide"
+date: "2025-04-15"
+category: "Laravel"
+tags: ["laravel", "php", "coding standards", "best practices", "interview"]
+description: "Master Laravel coding conventions with this complete guide covering naming, formatting, architecture, and best practices to write clean, maintainable Laravel applications."
+---
+
+Writing Laravel code that works is one thing — writing Laravel code that is clean, consistent, and easy to maintain is what separates juniors from pros.
+
+Whether you're prepping for a Laravel interview or working in a team, **following Laravel's coding conventions** ensures your code is readable, predictable, and scalable.
+
+This post covers:
+
+- Laravel naming conventions
+- Code structure & formatting
+- Best practices for controllers, models, migrations
+- Tips for clean architecture
+- What interviewers expect you to know
+
+---
+
+## 🧠 Why Coding Conventions Matter
+
+- Improves code readability and collaboration
+- Makes onboarding new devs easier
+- Helps avoid bugs caused by inconsistency
+- Ensures code is testable and scalable
+- Impresses hiring managers & senior devs
+
+---
+
+## 🔤 Naming Conventions in Laravel
+
+### ✅ Controllers
+
+- Use **PascalCase** (StudlyCase)
+- End with `Controller`
+
+```php
+UserController, ProductController, OrderController
+```
+
+### ✅ Models
+
+- Use **singular, PascalCase**
+
+```php
+User, Invoice, BlogPost
+```
+
+### ✅ Migrations
+
+- Use snake_case with a clear action
+
+```bash
+create_users_table  
+add_status_to_orders_table
+```
+
+### ✅ Routes
+
+- Use **snake_case** or **kebab-case** for URLs
+
+```php
+Route::get('/user-profile', ...);
+```
+
+---
+
+## 📁 File and Directory Structure
+
+Laravel’s default structure is well-organized. Stick to it unless you have strong reasons.
+
+- Keep business logic in `app/`
+- Don’t place logic in `routes/web.php`
+- Use `Http/Controllers` for routing logic only
+- Use `Services/`, `Repositories/` for domain/business logic
+- Group features by folders if your app is large (`app/Features/...`)
+
+---
+
+## 🧰 Controller Best Practices
+
+- Keep controllers **thin** — offload logic to Services or Actions
+- Use **Form Requests** for validation:
+
+```bash
+php artisan make:request StorePostRequest
+```
+
+- Group related routes using `Route::group()` and `Route::resource()`
+- Avoid writing SQL queries in controllers
+
+---
+
+## 💾 Model Best Practices
+
+- Keep models **clean**, avoid fat models
+- Use `fillable` or `guarded` to protect against mass assignment
+- Use accessors/mutators for data formatting
+
+```php
+public function getFullNameAttribute() {
+    return "{$this->first_name} {$this->last_name}";
+}
+```
+
+- Define relationships properly (`hasMany`, `belongsTo`, etc.)
+
+---
+
+## ⚙️ Migrations & Schema Design
+
+- Use `up()` and `down()` methods properly
+- Use Laravel's schema types (`string`, `text`, `boolean`, `foreignId`, etc.)
+- Always include timestamps unless you have a good reason
+
+```php
+$table->timestamps();
+$table->softDeletes(); // if needed
+```
+
+- Use database constraints and indexes
+
+---
+
+## 🔒 Security Practices
+
+- Use CSRF protection (`@csrf`)
+- Validate all inputs
+- Escape output (Blade does this automatically with `{{ }}`)
+- Use built-in Auth or Laravel Sanctum/Passport for APIs
+- Never expose `.env` or debug info in production
+
+---
+
+## 🧪 Testing Conventions
+
+- Store tests in `tests/Feature`, `tests/Unit`
+- Use meaningful test names:
+
+```php
+test_user_can_register()
+test_order_cannot_be_placed_without_payment()
+```
+
+- Use factories for test data
+- Mock external dependencies
+
+---
+
+## 🧼 Code Formatting
+
+Follow [PSR-12](https://www.php-fig.org/psr/psr-12/) standards:
+
+- 4-space indentation
+- CamelCase for methods and variables
+- PascalCase for class names
+- Keep lines under 120 characters
+- Add docblocks where necessary
+
+Use tools like:
+
+- **PHP CS Fixer**
+- **Laravel Pint**
+- **PHPStan** or **Psalm** (for static analysis)
+
+```bash
+composer require --dev laravel/pint
+./vendor/bin/pint
+```
+
+---
+
+## 🧠 Interview Tips
+
+### "Do you follow Laravel coding conventions?"
+
+> "Yes, I follow Laravel’s conventions for naming, structure, and architecture. I use service classes for logic, form requests for validation, and keep controllers lean. I also run Pint or PHP-CS-Fixer for formatting."
+
+### "What tools do you use to maintain code quality?"
+
+> "I use Pint for formatting, PHPStan for static analysis, and PHPUnit for testing. I also follow SOLID principles to structure my application cleanly."
+
+---
+
+## ✅ Summary of Best Practices
+
+| Area            | Best Practice                              |
+|-----------------|---------------------------------------------|
+| Naming          | PascalCase for classes, snake/kebab for routes |
+| Controllers     | Keep thin, delegate to services             |
+| Models          | Use relationships, accessors, fillables     |
+| Migrations      | Use timestamps, foreign keys, constraints   |
+| Formatting      | Follow PSR-12, use Pint or CS Fixer         |
+| Security        | Validate, escape, use CSRF & Auth           |
+| Testing         | Use Feature/Unit, factories, mocks          |
+
+---
+
+## 📌 Final Thoughts
+
+Writing clean Laravel code isn't about overengineering — it’s about making your code **easy to understand, easy to test, and easy to grow**.
+
+Whether you're working solo or on a team, Laravel’s conventions and best practices help you write code that others will love reading.
+
+---
+
+**Next up?**  
+Check out our guides on **Repository Pattern**, **Service Containers**, and **Unit Testing** to level up your Laravel game.

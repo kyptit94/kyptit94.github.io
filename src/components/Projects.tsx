@@ -8,41 +8,42 @@ const projects = [
     title: 'VNPT School Admission site',
     description: 'The admission site for School, using to register students before entering the school',
     tags: ['Vue.js', 'Laravel', 'MySql'],
-    image: 'assets/info/tsdc.png',
+    image: '/assets/info/tsdc.png',
     link: 'https://sandbox.tsdc.vnedu.vn',
   },
   {
     title: 'VNPT OneBSS',
     description: 'The ERP system for VNPT, using to manage all business processes',
     tags: ['React'],
-    image: 'assets/info/onebss.png',
+    image: '/assets/info/onebss.png',
     link: 'https://onebss.vnpt.vn',
   },
   {
     title: 'Booking Core',
     description: 'The core system for booking, using to book the room, manage the reservation, and generate reports',
     tags: ['Laravel', 'MySql', 'Vuejs'],
-    image: 'assets/info/booking.png',
+    image: '/assets/info/booking.png',
     link: 'https://sandbox.bookingcore.co/intro',
   },
   {
     title: 'IOC (Intelligent Operation Center)',
     description: 'The system for managing and monitoring the operation of the Vietnam school network',
     tags: ['Angular', 'Laravel', 'MySql'],
-    image: 'assets/info/ioc.png',
+    image: '/assets/info/ioc.png',
     link: 'https://sgdnghean.ioc.edu.vn',
   },
   {
     title: 'Personal Portfolio',
     description: 'My personal portfolio website, built with Next.js and Tailwind CSS',
     tags: ['Next.js', 'Tailwind CSS'],
-    image: 'assets/info/portfolio.png',
+    image: '/assets/info/portfolio.png',
+    link: 'https://kevinpham.pro',
   },
   {
     title: 'Monkey Junior',
     description: 'I am building a CRM and back-office system to create, manage, and organize educational content for the Monkey Junior English learning app.',
     tags: ['Vuejs', 'Laravel', 'MongoDB', 'Redis', 'Mysql'],
-    image: 'assets/info/monkey.png',
+    image: '/assets/info/monkey.png',
     link: 'https://monkeyjunior.com',
   },
 ];
@@ -76,9 +77,14 @@ export default function Projects() {
               viewport={{ once: true }}
               className="bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg"
             >
-              <div className="aspect-video bg-gray-200 dark:bg-gray-700">
+              <div className="aspect-video bg-gray-200 dark:bg-gray-700 relative">
                 {project.image ? (
-                  <Image src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                  <Image src={project.image}
+                  layout="fill"
+                  objectFit="cover"
+                  quality={100}
+                  alt={project.title}
+                  className="object-cover"/>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-500" />
                 )}

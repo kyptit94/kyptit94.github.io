@@ -1,0 +1,169 @@
+---
+title: "Mastering Unit Testing in Laravel: A Practical Guide"
+date: "2025-04-15"
+category: "Laravel"
+tags: ["laravel", "php", "unit testing", "testing", "tdd", "interview"]
+description: "Learn how to write unit tests in Laravel using PHPUnit and Laravel's testing tools. This guide covers test structure, mocking, best practices, and tips for acing Laravel interviews."
+---
+
+Unit testing is a critical skill for any Laravel developer, especially if you're preparing for a technical interview or working on large-scale applications. Laravel provides robust support for testing through PHPUnit and its own expressive testing layer.
+
+In this post, you’ll learn:
+
+- What unit testing is and why it matters
+- How Laravel supports testing out of the box
+- How to write unit tests with real examples
+- The difference between unit and feature tests
+- Best practices and common interview questions
+
+---
+
+## 🧪 What Is Unit Testing?
+
+**Unit testing** is the process of testing individual units of code (like a class or method) in isolation from the rest of the application.
+
+The goal is to verify that each unit of your codebase behaves as expected.
+
+---
+
+## ⚙️ Laravel's Built-in Testing Support
+
+Laravel uses **PHPUnit** under the hood and comes pre-configured for testing. When you create a new Laravel project, you’ll already see a `tests/` directory and a `phpunit.xml` configuration file.
+
+You can create two types of tests:
+
+| Type         | Purpose                          |
+|--------------|----------------------------------|
+| Unit tests   | Test individual classes/methods  |
+| Feature tests| Test end-to-end app behavior     |
+
+---
+
+## 🛠 Setting Up and Running Tests
+
+To run your tests:
+
+```bash
+php artisan test
+# or
+vendor/bin/phpunit
+```
+
+To create a test class:
+
+```bash
+php artisan make:test OrderServiceTest --unit
+```
+
+This creates a file in `tests/Unit/OrderServiceTest.php`.
+
+---
+
+## ✍️ Writing Your First Unit Test
+
+Here’s a simple example of testing a service class:
+
+```php
+namespace Tests\Unit;
+
+use Tests\TestCase;
+use App\Services\MathService;
+
+class MathServiceTest extends TestCase
+{
+    public function test_it_adds_two_numbers_correctly()
+    {
+        $math = new MathService();
+        $this->assertEquals(10, $math->add(7, 3));
+    }
+}
+```
+
+> Tip: Unit tests usually **don’t hit the database or external services**. If it does, it’s probably a feature test.
+
+---
+
+## 🔍 Mocking Dependencies
+
+Laravel integrates beautifully with **mocking libraries** like Mockery or PHPUnit’s built-in mocks.
+
+```php
+$mock = \Mockery::mock(InvoiceService::class);
+$mock->shouldReceive('send')->once()->andReturn(true);
+
+$this->app->instance(InvoiceService::class, $mock);
+```
+
+Now when you run the test, Laravel will use the fake service instead of the real one.
+
+---
+
+## 🧠 Common Testing Helpers
+
+Laravel provides tons of useful testing methods like:
+
+```php
+$this->assertTrue(condition);
+$this->assertEquals(expected, actual);
+$this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+$this->get('/route')->assertStatus(200);
+```
+
+---
+
+## 🧬 Unit Test vs Feature Test
+
+| Category         | Unit Test                          | Feature Test                        |
+|------------------|-------------------------------------|-------------------------------------|
+| Scope            | Small (method/class)                | Large (route/controller/service)    |
+| Dependencies     | Isolated                            | Includes database, services, etc.   |
+| Speed            | Very fast                           | Slower due to integration           |
+| Tools            | Assertions, mocks                   | HTTP calls, DB assertions           |
+
+Both are useful — use **unit tests** for logic, and **feature tests** for flows.
+
+---
+
+## 🧑‍💻 Interview Tips
+
+**"What’s the difference between a unit and feature test in Laravel?"**  
+Great answer includes:
+
+- Scope (unit = isolated, feature = full flow)
+- Dependencies (unit = mock, feature = real)
+- Tools and performance
+
+**"How do you mock a service in Laravel?"**  
+Talk about `Mockery`, `app()->instance(...)`, and Laravel’s service container.
+
+**"Do you write tests first or after?"**  
+Mention **TDD (Test-Driven Development)** if applicable, but say you focus on maintainability and reliability either way.
+
+---
+
+## ✅ Best Practices
+
+- Use meaningful test names (e.g. `test_user_can_register`)
+- Structure your tests logically: `Unit/`, `Feature/`, `Traits/`
+- Use factories to create test data:
+  
+```php
+User::factory()->create(['email' => 'test@example.com']);
+```
+
+- Clean up with `RefreshDatabase` or `DatabaseMigrations`
+- Mock services when testing controllers or jobs
+- Aim for high **coverage**, but prioritize **critical logic**
+
+---
+
+## 📌 Conclusion
+
+Unit testing in Laravel isn't just for enterprise apps or perfectionists — it's for **every developer who wants reliable, clean code**. Whether you're preparing for interviews or building your next Laravel project, writing proper unit tests will save you time, prevent bugs, and impress employers.
+
+---
+
+**Next steps?**  
+Try writing your own test for a Laravel job class, service, or helper. And if you’re interviewing — **mention how you test**. That shows maturity and professionalism every time.
+
+---

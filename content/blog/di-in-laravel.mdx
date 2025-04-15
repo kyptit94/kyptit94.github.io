@@ -1,0 +1,180 @@
+---
+title: "Mastering Dependency Injection Patterns in PHP"
+date: "2025-04-15"
+category: "Laravel"
+tags: ["php", "dependency injection", "design patterns", "software architecture", "interview"]
+description: "Understand dependency injection patterns in PHP including constructor, setter, and interface injection. Learn best practices and real-world examples for clean and testable code."
+---
+
+Dependency Injection (DI) is a powerful design principle in modern PHP development. It plays a vital role in building scalable, maintainable, and testable applications — and it's a popular topic in job interviews.
+
+In this article, you'll learn:
+
+- What dependency injection is
+- Why it's important
+- The main DI patterns used in PHP
+- Real-world code examples
+- Interview tips and best practices
+
+---
+
+## 🤔 What is Dependency Injection?
+
+Dependency Injection is a technique where **an object receives other objects it depends on**, rather than creating them internally.
+
+### Without Dependency Injection:
+
+```php
+class UserController {
+    protected $userService;
+
+    public function __construct() {
+        $this->userService = new UserService(); // tightly coupled
+    }
+}
+```
+
+The `UserController` is now **tightly coupled** to `UserService`, making it harder to test or swap out.
+
+---
+
+## ✅ With Dependency Injection:
+
+```php
+class UserController {
+    protected $userService;
+
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
+    }
+}
+```
+
+The dependency (`UserService`) is **injected from outside**, making the controller more flexible and testable.
+
+---
+
+# 🧱 3 Main Dependency Injection Patterns in PHP
+
+## 1. Constructor Injection (Most Common)
+
+Dependencies are passed through the constructor.
+
+```php
+class Mailer {
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger) {
+        $this->logger = $logger;
+    }
+}
+```
+
+### ✅ Pros:
+- Immutable (you must provide the dependency)
+- Great for required dependencies
+- Easy to test
+
+---
+
+## 2. Setter Injection
+
+Dependencies are set via setter methods after object construction.
+
+```php
+class Mailer {
+    protected $logger;
+
+    public function setLogger(LoggerInterface $logger) {
+        $this->logger = $logger;
+    }
+}
+```
+
+### ✅ Pros:
+- Good for optional dependencies
+
+### ⚠️ Cons:
+- Object may be incomplete until the setter is called
+
+---
+
+## 3. Interface Injection (Less common in PHP)
+
+The dependency provides an interface that the dependent class must implement.
+
+```php
+interface LoggerAwareInterface {
+    public function setLogger(LoggerInterface $logger);
+}
+
+class Mailer implements LoggerAwareInterface {
+    protected $logger;
+
+    public function setLogger(LoggerInterface $logger) {
+        $this->logger = $logger;
+    }
+}
+```
+
+Used when you want to enforce injection at a broader level (e.g., through frameworks).
+
+---
+
+# 🧪 Dependency Injection in Frameworks
+
+Modern PHP frameworks like Laravel, Symfony, and Laminas use DI extensively through **service containers**.
+
+Example in Laravel:
+
+```php
+class InvoiceController {
+    public function __construct(InvoiceService $invoiceService) {
+        $this->invoiceService = $invoiceService;
+    }
+}
+```
+
+Laravel’s service container resolves `InvoiceService` automatically!
+
+---
+
+## 🧠 Why Interviewers Ask About It
+
+- Shows your understanding of clean architecture
+- Tests knowledge of SOLID principles (especially the D: Dependency Inversion)
+- Ensures you're ready for modern framework usage
+
+### 🔥 Sample Interview Answer:
+
+> "I use constructor injection for required dependencies and setter injection for optional ones. I’ve used service containers in Laravel to inject services, and I write unit tests with mocked dependencies for flexibility."
+
+---
+
+# 🛠 Tips for Clean DI in PHP
+
+- Favor constructor injection for clarity
+- Avoid creating new objects inside classes (use DI instead)
+- Use interfaces for flexibility
+- Use a service container for large applications
+
+---
+
+## 🧩 Bonus: Combine DI with Design Patterns
+
+Dependency injection pairs well with:
+- Factory Pattern
+- Strategy Pattern
+- Decorator Pattern
+- Repository Pattern
+
+---
+
+# ✅ Final Thoughts
+
+Dependency Injection isn't just a fancy term — it's a core practice for clean, maintainable PHP applications. Whether you're building a personal project or prepping for an interview, mastering DI will make your codebase better and your answers stronger.
+
+---
+
+📌 Want to dive deeper?  
+Check out our guides on the **Service Container in Laravel**, **SOLID Principles**, and **Unit Testing with Mocked Dependencies**.
