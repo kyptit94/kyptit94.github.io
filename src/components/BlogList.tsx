@@ -33,7 +33,13 @@ export default function BlogList({ initialPosts }: BlogListProps) {
     setTimeout(() => {
       setLoading(false);
       const nextPage = page + 1;
+      console.log(`Loading more posts for page ${initialPosts}`);
       const newPosts = initialPosts.slice(0, nextPage * 6); // Load 6 more posts per page
+      if (newPosts.length >= initialPosts.length) {
+        // If all posts are loaded, stop loading
+        setVisiblePosts(initialPosts);
+        return;
+      }
       setVisiblePosts(newPosts);
       setPage(nextPage);
     }, 1000); // Simulate loading time

@@ -1,0 +1,163 @@
+---
+title: "Vue 3: watch() vs watchEffect() — What's the Difference?"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "watch", "watchEffect", "composition api", "reactivity", "frontend"]
+description: "Explore the key differences between watch() and watchEffect() in Vue 3 Composition API. Learn when to use each, how they work under the hood, and common use cases with real examples."
+---
+
+Vue 3’s Composition API introduces two powerful tools for reacting to data changes: `watch()` and `watchEffect()`.
+
+While they may look similar at first glance, these two functions behave quite differently — and choosing the right one can make your app more efficient and predictable.
+
+In this post, we’ll dive into:
+
+- The core differences between `watch()` and `watchEffect()`
+- How they work under the hood
+- Syntax comparisons
+- Real-world use cases
+- Best practices and interview tips
+
+---
+
+## 🧠 What is `watch()`?
+
+`watch()` allows you to **explicitly observe** one or more reactive sources and run a callback when they change.
+
+```js
+import { ref, watch } from 'vue';
+
+const count = ref(0);
+
+watch(count, (newVal, oldVal) => {
+  console.log(`count changed from ${oldVal} to ${newVal}`);
+});
+```
+
+### ✅ Best for:
+- Comparing old vs new values
+- Watching multiple specific sources
+- Delayed or conditional execution
+
+---
+
+## ⚡ What is `watchEffect()`?
+
+`watchEffect()` automatically **tracks all reactive dependencies** used in its callback and reruns the function whenever any of them change.
+
+```js
+import { ref, watchEffect } from 'vue';
+
+const count = ref(0);
+
+watchEffect(() => {
+  console.log(`count is now ${count.value}`);
+});
+```
+
+### ✅ Best for:
+- Quick reactive side effects
+- Automatically tracked dependencies
+- Initial run and reactivity combined
+
+---
+
+## 🔬 Key Differences
+
+| Feature                     | `watch()`                           | `watchEffect()`                    |
+|-----------------------------|--------------------------------------|-------------------------------------|
+| Dependency tracking         | Manual (explicit)                    | Automatic (implicit)                |
+| Old value access            | ✅ Yes                                | ❌ No                               |
+| Initial run                 | ❌ Runs only on change (default)     | ✅ Runs immediately                 |
+| Multiple sources            | ✅ Supported                         | ✅ Auto-tracked                     |
+| Performance control         | ✅ More precise                      | ⚠️ Can rerun too often              |
+| Use in async logic          | ✅ Excellent                         | ✅ Good for quick effects           |
+
+---
+
+## 🧩 When to Use `watch()`
+
+- When you need **old and new values**
+- When watching **multiple unrelated refs**
+- When you want **precise control** over when a function is triggered
+- When you need to **debounce**, **throttle**, or **conditionally skip**
+
+```js
+watch([email, password], ([newEmail, newPassword]) => {
+  console.log('Form values changed');
+});
+```
+
+---
+
+## 🧩 When to Use `watchEffect()`
+
+- When you want **automatic reactivity**
+- For **initial side effects** like API calls
+- For simple reactive logic that depends on computed values or refs
+
+```js
+watchEffect(() => {
+  if (user.value.isLoggedIn) {
+    fetchUserProfile();
+  }
+});
+```
+
+---
+
+## 🧪 Cleanup Behavior
+
+Both `watch()` and `watchEffect()` support cleanup logic via a special `onCleanup` function:
+
+```js
+watchEffect((onCleanup) => {
+  const interval = setInterval(() => { /* ... */ }, 1000);
+  onCleanup(() => clearInterval(interval));
+});
+```
+
+---
+
+## ⚠️ Gotchas & Caveats
+
+- **watchEffect() can trigger too often** if not written carefully — especially with many dynamic dependencies
+- **watch() is lazy by default**, but can be run immediately with `{ immediate: true }` option
+
+```js
+watch(refValue, handler, { immediate: true });
+```
+
+---
+
+## 🧠 Interview Tip
+
+**"What’s the difference between `watch()` and `watchEffect()` in Vue 3?"**
+
+> "`watch()` is explicit — you tell it what to observe. It gives access to old and new values and is ideal for comparing changes. `watchEffect()` automatically tracks reactive dependencies and runs immediately. It's great for quick, simple effects, but less controlled."
+
+---
+
+## 📌 Summary Table
+
+| Feature              | `watch()`                        | `watchEffect()`                     |
+|----------------------|-----------------------------------|--------------------------------------|
+| Track dependencies   | Manually                         | Automatically                       |
+| Runs immediately     | ❌ (unless `{ immediate: true }`) | ✅ Always runs once immediately      |
+| Old value access     | ✅ Yes                            | ❌ No                                |
+| Cleanup supported    | ✅ Yes                            | ✅ Yes                               |
+| Ideal for            | Conditional logic, comparisons   | Quick side effects, data sync       |
+
+---
+
+## ✅ Final Thoughts
+
+Use `watch()` when you need **precision**.  
+Use `watchEffect()` when you want **convenience**.
+
+Together, they make Vue 3’s reactivity system incredibly flexible — and powerful enough for anything from small UI tweaks to complex data-driven apps.
+
+---
+
+**Next Up?**  
+Check out our guides on **computed() vs methods**, **custom composables**, and **advanced reactivity control** with `customRef()` and `triggerRef()`!

@@ -25,7 +25,9 @@ export default async function BlogPage() {
       <BlogCategories categories={categories} />
 
       {/* Blog Posts Grid with Infinite Scroll */}
-      <BlogList initialPosts={posts.slice(0, 6)} />
+      <div className="h-[80vh]">
+        <BlogList initialPosts={posts} />
+      </div>
     </div>
   );
 }

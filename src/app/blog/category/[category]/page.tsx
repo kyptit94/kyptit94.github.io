@@ -33,7 +33,9 @@ export default async function CategoryPage({
       <BlogCategories categories={categories} activeCategory={params.category} />
 
       {/* Blog Posts Grid */}
-      <BlogList initialPosts={posts} />
+      <div className="h-[80vh]">
+        <BlogList initialPosts={posts} />
+      </div>
     </div>
   );
 }

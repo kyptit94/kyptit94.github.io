@@ -1,0 +1,213 @@
+---
+title: "Building Authentication with Pinia in Vue 3"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "pinia", "authentication", "state management", "frontend"]
+description: "Learn how to implement authentication in Vue 3 using Pinia. This guide covers login, logout, token storage, protecting routes, and persisting user state."
+---
+
+Authentication is one of the most essential parts of any modern web app — and with **Pinia**, managing auth state in Vue 3 becomes clean, modular, and scalable.
+
+In this guide, you’ll learn how to:
+
+- Set up a Pinia store for authentication
+- Handle login and logout actions
+- Store tokens and user data
+- Persist auth state with localStorage
+- Protect routes using navigation guards
+
+---
+
+## 📦 Step 1: Install Pinia and Setup
+
+If you haven’t yet:
+
+```bash
+npm install pinia
+```
+
+Register Pinia in your app:
+
+```js
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+
+const app = createApp(App);
+const pinia = createPinia();
+
+app.use(pinia);
+app.mount('#app');
+```
+
+---
+
+## 🛠 Step 2: Create the Auth Store
+
+📁 `src/stores/useAuth.js`
+
+```js
+import { defineStore } from 'pinia';
+import axios from 'axios';
+
+export const useAuth = defineStore('auth', {
+  state: () => ({
+    user: null,
+    token: null,
+  }),
+
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+  },
+
+  actions: {
+    async login(credentials) {
+      try {
+        const res = await axios.post('/api/login', credentials);
+        this.token = res.data.token;
+        this.user = res.data.user;
+
+        // Optional: set token for all axios requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+      } catch (error) {
+        throw new Error('Login failed');
+      }
+    },
+
+    logout() {
+      this.user = null;
+      this.token = null;
+      delete axios.defaults.headers.common['Authorization'];
+    },
+  },
+
+  persist: true, // requires pinia-plugin-persistedstate
+});
+```
+
+---
+
+## 🧪 Step 3: Use Auth Store in a Login Form
+
+📁 `Login.vue`
+
+```vue
+<template>
+  <form @submit.prevent="submitLogin">
+    <input v-model="email" placeholder="Email" />
+    <input v-model="password" type="password" placeholder="Password" />
+    <button>Login</button>
+  </form>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useAuth } from '@/stores/useAuth';
+import { useRouter } from 'vue-router';
+
+const email = ref('');
+const password = ref('');
+const auth = useAuth();
+const router = useRouter();
+
+const submitLogin = async () => {
+  try {
+    await auth.login({ email: email.value, password: password.value });
+    router.push('/dashboard');
+  } catch (err) {
+    alert(err.message);
+  }
+};
+</script>
+```
+
+---
+
+## 🔒 Step 4: Protect Routes with Navigation Guards
+
+📁 `router/index.js`
+
+```js
+import { useAuth } from '@/stores/useAuth';
+
+router.beforeEach((to, from, next) => {
+  const auth = useAuth();
+
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    next('/login');
+  } else {
+    next();
+  }
+});
+```
+
+In your routes config:
+
+```js
+{
+  path: '/dashboard',
+  component: Dashboard,
+  meta: { requiresAuth: true },
+}
+```
+
+---
+
+## 💾 Step 5: Persist Auth State
+
+Install the plugin:
+
+```bash
+npm install pinia-plugin-persistedstate
+```
+
+Configure it:
+
+```js
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+```
+
+✅ Your `token` and `user` will now survive page reloads.
+
+---
+
+## 🧠 Bonus: Handle Token Expiry
+
+In your auth store, create a utility:
+
+```js
+checkToken() {
+  // You could decode the JWT token or check expiration
+  if (!this.token || this.tokenIsExpired()) {
+    this.logout();
+  }
+}
+```
+
+Run this in `onMounted()` of your layout component to auto-logout if needed.
+
+---
+
+## 🧠 Interview Tip
+
+**"How do you handle authentication in Vue?"**
+
+> "I use Pinia to store the user and token. I persist the token using pinia-plugin-persistedstate, and I use route guards to protect pages. For API calls, I set the token in axios headers after login."
+
+---
+
+## ✅ Final Thoughts
+
+Authentication doesn’t have to be messy. With Vue 3 and Pinia, you can implement a secure and reactive login flow using:
+
+- Cleanly scoped Pinia stores
+- Global state for user and token
+- Route protection via Vue Router
+- Optional state persistence
+
+---
+
+**Next Up?**  
+Explore **refresh tokens**, **multi-role access control**, or **integrating social logins** in Vue with Pinia!

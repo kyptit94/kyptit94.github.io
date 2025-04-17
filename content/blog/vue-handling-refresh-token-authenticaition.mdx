@@ -1,0 +1,199 @@
+---
+title: "Handling Refresh Token Flow in Vue 3 with Pinia and Axios"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "pinia", "authentication", "refresh token", "axios", "state management"]
+description: "Learn how to implement secure refresh token flow in Vue 3 using Pinia and Axios. This guide covers token storage, auto-refreshing, and intercepting expired access tokens."
+---
+
+When building a Vue 3 app with authentication, it's essential to support **refresh tokens** to keep the user logged in without asking them to re-enter credentials repeatedly.
+
+In this guide, you'll learn how to:
+
+- Store and manage access/refresh tokens with **Pinia**
+- Automatically **refresh access tokens** when they expire
+- Use **Axios interceptors** to retry failed requests
+- Secure your frontend authentication flow
+
+---
+
+## 🔐 Access Token vs Refresh Token
+
+| Token Type     | Lifespan     | Purpose                              |
+|----------------|--------------|---------------------------------------|
+| Access Token   | Short-lived  | Used for API requests                 |
+| Refresh Token  | Long-lived   | Used to request a new access token    |
+
+Your app will:
+
+1. Login → receive `access_token` + `refresh_token`
+2. Use `access_token` for requests
+3. If expired, send `refresh_token` to `/refresh` endpoint
+4. Get a new `access_token` and retry original request
+
+---
+
+## 🛠 Step 1: Setup Pinia Auth Store
+
+📁 `src/stores/useAuth.js`
+
+```js
+import { defineStore } from 'pinia';
+import axios from 'axios';
+
+export const useAuth = defineStore('auth', {
+  state: () => ({
+    accessToken: null,
+    refreshToken: null,
+    user: null,
+  }),
+
+  getters: {
+    isAuthenticated: (state) => !!state.accessToken,
+  },
+
+  actions: {
+    async login(credentials) {
+      const res = await axios.post('/api/login', credentials);
+      this.accessToken = res.data.access_token;
+      this.refreshToken = res.data.refresh_token;
+      this.user = res.data.user;
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
+    },
+
+    logout() {
+      this.accessToken = null;
+      this.refreshToken = null;
+      this.user = null;
+      delete axios.defaults.headers.common['Authorization'];
+    },
+
+    async refreshAccessToken() {
+      try {
+        const res = await axios.post('/api/refresh', {
+          refresh_token: this.refreshToken,
+        });
+        this.accessToken = res.data.access_token;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
+        return true;
+      } catch (err) {
+        this.logout();
+        return false;
+      }
+    },
+  },
+
+  persist: true,
+});
+```
+
+---
+
+## 🔄 Step 2: Axios Interceptor for Auto-Refresh
+
+📁 `src/axios.js`
+
+```js
+import axios from 'axios';
+import { useAuth } from '@/stores/useAuth';
+
+const instance = axios.create({
+  baseURL: '/api',
+});
+
+// Intercept responses
+instance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const auth = useAuth();
+
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true;
+
+      const success = await auth.refreshAccessToken();
+      if (success) {
+        error.config.headers['Authorization'] = `Bearer ${auth.accessToken}`;
+        return instance(error.config); // retry the original request
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default instance;
+```
+
+Use this `axios` instance across your app.
+
+---
+
+## ✅ Step 3: Using the Auth Store in Components
+
+```vue
+<script setup>
+import { useAuth } from '@/stores/useAuth';
+
+const auth = useAuth();
+
+if (auth.isAuthenticated) {
+  // token will auto-refresh on 401
+}
+</script>
+```
+
+---
+
+## 🧪 Optional: Auto-Refresh Token on App Start
+
+In your main `App.vue` or layout:
+
+```js
+onMounted(async () => {
+  const auth = useAuth();
+  if (auth.refreshToken && !auth.accessToken) {
+    await auth.refreshAccessToken();
+  }
+});
+```
+
+---
+
+## 🔐 Backend Must-Haves
+
+Ensure your backend supports:
+
+- `/login` → returns `access_token` and `refresh_token`
+- `/refresh` → accepts `refresh_token` and returns new `access_token`
+- Optionally: rotating refresh tokens for security
+
+---
+
+## 🧠 Interview Tip
+
+**"How do you handle access token expiration in Vue?"**
+
+> "I use Axios interceptors to catch 401 responses. If the access token is expired, I send the refresh token to the `/refresh` endpoint, get a new access token, update headers, and retry the original request."
+
+---
+
+## 📌 Summary
+
+| Feature              | Pinia + Axios Implementation            |
+|----------------------|------------------------------------------|
+| Store tokens         | Pinia `state` with `persist: true`       |
+| Refresh on 401       | Axios interceptor                        |
+| Auto-retry requests  | Interceptor modifies `config` and retries|
+| Secure logout        | Clears both tokens + headers             |
+
+---
+
+## ✅ Final Thoughts
+
+Implementing a secure **refresh token flow** is crucial for any serious Vue app. With Pinia and Axios, you can keep your users logged in seamlessly — while keeping your codebase clean and maintainable.
+
+---
+
+**Next Up?**  
+Build **role-based route guards**, **token rotation**, or use **Pinia + composables** for full modularity.

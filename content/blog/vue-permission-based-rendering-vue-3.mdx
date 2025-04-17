@@ -1,0 +1,178 @@
+---
+title: "Permission-Based UI Rendering in Vue 3: Show/Hide Buttons Based on User Roles"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "pinia", "authentication", "permissions", "role-based ui", "frontend"]
+description: "Learn how to conditionally render buttons and UI elements in Vue 3 based on user permissions or roles using Pinia. Includes strategies for reusable logic, directives, and real-world examples."
+---
+
+It’s common in real-world applications to restrict **UI features** based on a user’s role or permission level — like hiding a delete button from regular users, or showing admin tools only to admins.
+
+With **Vue 3** and **Pinia**, implementing permission-based UI logic is simple, clean, and scalable.
+
+In this post, you’ll learn how to:
+
+- Store user roles/permissions in Pinia
+- Conditionally render buttons or sections
+- Use helper functions and composables
+- Build a global custom directive for `v-permission`
+
+---
+
+## 🛠 Step 1: Store Roles or Permissions in Pinia
+
+📁 `src/stores/useAuth.js`
+
+```js
+import { defineStore } from 'pinia';
+
+export const useAuth = defineStore('auth', {
+  state: () => ({
+    user: null,
+    token: null,
+  }),
+  getters: {
+    role: (state) => state.user?.role,
+    permissions: (state) => state.user?.permissions || [], // optional
+    hasPermission: (state) => (perm) => state.user?.permissions?.includes(perm),
+    isAdmin: (state) => state.user?.role === 'admin',
+  },
+  persist: true,
+});
+```
+
+> `permissions` can be a list like: `['create_post', 'edit_post', 'delete_user']`
+
+---
+
+## 🧪 Step 2: Simple Role-Based Conditional Rendering
+
+```vue
+<script setup>
+import { useAuth } from '@/stores/useAuth';
+const auth = useAuth();
+</script>
+
+<template>
+  <button v-if="auth.role === 'admin'">Delete User</button>
+</template>
+```
+
+### ✅ OR using a getter:
+
+```vue
+<template>
+  <button v-if="auth.isAdmin">Delete User</button>
+</template>
+```
+
+---
+
+## ✅ Step 3: Permission-Based Rendering Using `hasPermission()`
+
+```vue
+<template>
+  <button v-if="auth.hasPermission('create_post')">New Post</button>
+  <button v-if="auth.hasPermission('delete_post')">Delete Post</button>
+</template>
+```
+
+---
+
+## 🧠 Step 4: Create a Reusable `usePermission()` Composable (Optional)
+
+📁 `src/composables/usePermission.js`
+
+```js
+import { useAuth } from '@/stores/useAuth';
+
+export function usePermission(required) {
+  const auth = useAuth();
+  return auth.permissions.includes(required);
+}
+```
+
+```vue
+<script setup>
+import { usePermission } from '@/composables/usePermission';
+
+const canEdit = usePermission('edit_post');
+</script>
+
+<template>
+  <button v-if="canEdit">Edit Post</button>
+</template>
+```
+
+---
+
+## ✨ Step 5: Create a Custom Directive `v-permission`
+
+📁 `src/directives/permission.js`
+
+```js
+import { useAuth } from '@/stores/useAuth';
+
+export default {
+  mounted(el, binding) {
+    const auth = useAuth();
+    const permission = binding.value;
+    if (!auth.hasPermission(permission)) {
+      el.parentNode?.removeChild(el); // Remove element if unauthorized
+    }
+  }
+};
+```
+
+Register the directive globally:
+
+📁 `main.js`
+
+```js
+import permission from './directives/permission';
+app.directive('permission', permission);
+```
+
+Use it anywhere:
+
+```vue
+<button v-permission="'delete_user'">Delete</button>
+```
+
+---
+
+## 🧠 Best Practices
+
+- 🔄 Use roles for **broad access control** (admin/editor/user)
+- ✅ Use permissions for **granular control** (create/delete/edit)
+- 🧩 Use `v-if`, `computed`, or a `v-permission` directive based on project scale
+- 🧪 Never rely on client-side permission **alone** — always enforce on backend too
+
+---
+
+## 🧠 Interview Tip
+
+**"How do you control feature access in Vue apps?"**
+
+> "I store the user's role and permissions in a Pinia store. Then I conditionally render buttons or components using either `v-if` or a custom `v-permission` directive. This helps me build secure and modular role-based UIs."
+
+---
+
+## 📌 Summary
+
+| Method                 | Purpose                             | Usage Example                           |
+|------------------------|--------------------------------------|------------------------------------------|
+| `auth.role === 'admin'`| Simple role check                    | `v-if="auth.role === 'admin'"`          |
+| `auth.hasPermission()` | Granular permission logic            | `v-if="auth.hasPermission('edit_post')"`|
+| `v-permission`         | Global reusable directive            | `<button v-permission="'delete_user'" />`|
+
+---
+
+## ✅ Final Thoughts
+
+Controlling access at the **UI level** improves UX and security. Whether it’s for hiding admin-only features or building a full RBAC system, Vue + Pinia gives you all the tools to do it cleanly and flexibly.
+
+---
+
+**Next Up?**  
+Learn how to build **dynamic navigation menus** based on roles, or how to implement **fine-grained access control in Vue Router**.

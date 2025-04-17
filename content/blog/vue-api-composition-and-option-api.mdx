@@ -1,0 +1,197 @@
+---
+title: "Vue 3 Composition API vs Options API: Which One Should You Use?"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "composition api", "options api", "frontend", "interview"]
+description: "Explore the differences between Vue 3's Composition API and Options API. Learn the pros, cons, syntax, and best use cases for each approach, including examples and interview tips."
+---
+
+Vue 3 introduces a powerful new way of writing components: the **Composition API**. But the **Options API**, which has been around since Vue 2, is still fully supported.
+
+So which one should you use?
+
+In this guide, we’ll break down:
+
+- What the Composition and Options APIs are
+- Key differences in syntax and usage
+- Pros and cons of each
+- When to choose one over the other
+- Code comparisons and interview-ready insights
+
+---
+
+## 📘 What is the Options API?
+
+The **Options API** is the classic way of writing Vue components using predefined options like `data`, `methods`, `computed`, and `mounted`.
+
+```js
+export default {
+  data() {
+    return {
+      count: 0
+    };
+  },
+  methods: {
+    increment() {
+      this.count++;
+    }
+  },
+  mounted() {
+    console.log("Component mounted!");
+  }
+}
+```
+
+It’s intuitive, beginner-friendly, and easy to read — especially for small components.
+
+---
+
+## 🔬 What is the Composition API?
+
+The **Composition API** is a new way to organize component logic using `setup()`, `ref`, `reactive`, and imported lifecycle functions like `onMounted`.
+
+```js
+import { ref, onMounted } from 'vue';
+
+export default {
+  setup() {
+    const count = ref(0);
+    const increment = () => count.value++;
+
+    onMounted(() => {
+      console.log("Component mounted!");
+    });
+
+    return { count, increment };
+  }
+}
+```
+
+It enables better logic reuse and organization in large-scale apps.
+
+---
+
+## 🔄 Syntax Comparison
+
+| Feature        | Options API                         | Composition API                          |
+|----------------|--------------------------------------|-------------------------------------------|
+| State          | `data()`                            | `ref()` or `reactive()`                  |
+| Methods        | `methods: {}`                       | Define functions in `setup()`             |
+| Computed       | `computed: {}`                      | `computed()` in `setup()`                 |
+| Lifecycle      | `mounted()`, `updated()`            | `onMounted()`, `onUpdated()`              |
+| Reusability    | Mixins                              | Composables (functions with shared logic) |
+
+---
+
+## ✅ Pros of the Options API
+
+- More **beginner-friendly**
+- Easy to read and understand for simple components
+- Structure is predictable: `data`, `methods`, etc. are clearly separated
+
+### ⚠️ Cons
+
+- Harder to **reuse logic** across components
+- Logic is spread across multiple options
+- Doesn’t scale as well in large codebases
+
+---
+
+## ✅ Pros of the Composition API
+
+- Logic is **grouped by feature**, not option type
+- Great for **code reuse** via custom composables
+- Works better with TypeScript and IDE autocompletion
+- Scales well in large, complex components
+
+### ⚠️ Cons
+
+- Slightly more complex for beginners
+- All logic is inside `setup()`, which can get messy if not organized well
+
+---
+
+## 🧩 Real-World Use Cases
+
+### Use Options API When:
+
+- Building simple components
+- Working in legacy Vue 2-style projects
+- Onboarding junior developers
+
+### Use Composition API When:
+
+- Managing complex logic
+- Sharing code across components (e.g., form validation, data fetching)
+- Building large-scale applications
+- Using TypeScript extensively
+
+---
+
+## 🧪 Example: Same Logic in Both APIs
+
+### Options API
+
+```js
+export default {
+  data() {
+    return { count: 0 };
+  },
+  methods: {
+    increment() {
+      this.count++;
+    }
+  }
+}
+```
+
+### Composition API
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const count = ref(0);
+    const increment = () => count.value++;
+    return { count, increment };
+  }
+}
+```
+
+---
+
+## 🧠 Interview Tips
+
+**"What’s the difference between the Composition and Options API?"**
+
+> "Options API separates logic into sections like `data`, `methods`, `computed`, while Composition API groups related logic in the `setup()` function. Composition is more scalable and reusable, especially in large applications."
+
+**"When should you choose one over the other?"**
+
+> "Use Options API for small components or quick prototypes. Use Composition API for advanced logic, TypeScript integration, and code sharing across components."
+
+---
+
+## 📌 Summary Table
+
+| Feature              | Options API              | Composition API              |
+|----------------------|--------------------------|------------------------------|
+| Learning Curve       | Easier                   | Slightly steeper             |
+| Code Reuse           | Mixins                   | Composables                  |
+| Readability          | More structured           | More flexible (can be messy) |
+| TypeScript Support   | Limited                  | Excellent                    |
+| Scalability          | Less ideal               | Excellent for large apps     |
+
+---
+
+## ✅ Final Thoughts
+
+Both APIs are valid and powerful. The Options API is great for beginners and smaller components, while the Composition API shines in larger, more complex applications.
+
+The best part? **You can use both together in the same app.**
+
+---
+
+**Next Up?**  
+Check out our posts on **Lifecycle Hooks**, **Composables**, and **State Management with Pinia** to level up your Vue skills.

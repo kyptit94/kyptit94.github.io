@@ -1,0 +1,197 @@
+---
+title: "Implementing Multi-Role Authentication in Vue 3 with Pinia and Vue Router"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "pinia", "authentication", "multi-role", "access control", "router guards"]
+description: "Learn how to implement multi-role authentication and access control in Vue 3 using Pinia and Vue Router. Includes protected routes, role-based redirects, and route guards."
+---
+
+When building a real-world Vue 3 app, it’s common to have different types of users — for example: **Admin**, **Editor**, **Customer**, or **Superuser**.
+
+You need to restrict access to certain pages depending on each user's **role**.
+
+In this guide, you’ll learn how to:
+
+- Store user roles in a Pinia auth store
+- Define routes based on roles
+- Use navigation guards to protect pages
+- Redirect unauthorized users
+- Handle fallback routes gracefully
+
+---
+
+## 🛠 Step 1: Setup Your Auth Store
+
+📁 `src/stores/useAuth.js`
+
+```js
+import { defineStore } from 'pinia';
+import axios from 'axios';
+
+export const useAuth = defineStore('auth', {
+  state: () => ({
+    user: null,
+    token: null,
+  }),
+
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+    role: (state) => state.user?.role || null,
+    isAdmin: (state) => state.user?.role === 'admin',
+    isEditor: (state) => state.user?.role === 'editor',
+  },
+
+  actions: {
+    async login(credentials) {
+      const res = await axios.post('/api/login', credentials);
+      this.token = res.data.token;
+      this.user = res.data.user;
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+    },
+
+    logout() {
+      this.token = null;
+      this.user = null;
+      delete axios.defaults.headers.common['Authorization'];
+    },
+  },
+
+  persist: true,
+});
+```
+
+> The `user.role` should come from the backend — based on your app's logic (e.g. `'admin'`, `'editor'`, `'user'`, etc.)
+
+---
+
+## 🧭 Step 2: Define Role-Based Routes
+
+📁 `src/router/index.js`
+
+```js
+const routes = [
+  {
+    path: '/dashboard',
+    component: () => import('@/views/Dashboard.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/admin',
+    component: () => import('@/views/AdminPanel.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] },
+  },
+  {
+    path: '/editor',
+    component: () => import('@/views/EditorTools.vue'),
+    meta: { requiresAuth: true, roles: ['admin', 'editor'] },
+  },
+  {
+    path: '/unauthorized',
+    component: () => import('@/views/Unauthorized.vue'),
+  },
+];
+```
+
+---
+
+## 🔐 Step 3: Add Navigation Guards
+
+```js
+import { useAuth } from '@/stores/useAuth';
+
+router.beforeEach((to, from, next) => {
+  const auth = useAuth();
+
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return next('/login');
+  }
+
+  if (to.meta.roles) {
+    const allowedRoles = to.meta.roles;
+    const userRole = auth.role;
+
+    if (!allowedRoles.includes(userRole)) {
+      return next('/unauthorized');
+    }
+  }
+
+  next();
+});
+```
+
+✅ Works for both auth and role checks  
+✅ Easy to scale and update roles later
+
+---
+
+## 🔄 Optional: Role-Based Redirect on Login
+
+In your login logic:
+
+```js
+if (auth.role === 'admin') {
+  router.push('/admin');
+} else if (auth.role === 'editor') {
+  router.push('/editor');
+} else {
+  router.push('/dashboard');
+}
+```
+
+---
+
+## 🔁 Optional: Use Enum or Constant for Roles
+
+Create a role constants file:
+
+📁 `src/constants/roles.js`
+
+```js
+export const ROLES = {
+  ADMIN: 'admin',
+  EDITOR: 'editor',
+  USER: 'user',
+};
+```
+
+Use them throughout your project for type safety and consistency:
+
+```js
+meta: { roles: [ROLES.ADMIN, ROLES.EDITOR] }
+```
+
+---
+
+## 🧠 Interview Tip
+
+**"How do you implement role-based access control in Vue?"**
+
+> "I store the user role in a Pinia store, and use Vue Router’s navigation guards to restrict routes based on the role. If a user tries to access a restricted route, I redirect them to an unauthorized page."
+
+**"How do you handle multiple roles?"**
+
+> "Each route defines an array of allowed roles in its `meta`. The navigation guard checks if the current user's role is in that list before allowing access."
+
+---
+
+## 📌 Summary
+
+| Feature                 | Implementation                                 |
+|-------------------------|-------------------------------------------------|
+| Store roles             | Pinia auth store (`user.role`)                 |
+| Restrict routes         | `meta.roles` in route config                   |
+| Navigation guard        | Check auth + roles in `router.beforeEach()`    |
+| Fallback route          | Redirect to `/unauthorized` if access denied   |
+| Dynamic redirect        | Route users to correct dashboard after login   |
+
+---
+
+## ✅ Final Thoughts
+
+With Vue 3, Pinia, and Vue Router, implementing **multi-role authentication** becomes straightforward. You can confidently manage admin panels, editor tools, and user dashboards — all from a single, secure access system.
+
+---
+
+**Next Up?**  
+Explore **Permission-based UI rendering**, **JWT + role decoding**, or **Role-based navigation menus** in Vue.

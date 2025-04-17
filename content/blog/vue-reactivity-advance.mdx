@@ -1,0 +1,191 @@
+---
+title: "Advanced Reactivity Control in Vue 3: customRef, triggerRef, markRaw & More"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "reactivity", "customRef", "triggerRef", "markRaw", "frontend"]
+description: "Unlock advanced reactivity control in Vue 3 using tools like customRef, triggerRef, shallowRef, markRaw, and readonly. Perfect for building high-performance and scalable Vue apps."
+---
+
+Vue 3’s reactivity system is already incredibly powerful — but sometimes you need **more control**. Maybe you want to debounce updates, prevent Vue from tracking an object, or manually trigger a re-render.
+
+That’s where Vue 3’s **advanced reactivity APIs** come in.
+
+In this post, we’ll explore:
+
+- `customRef()`
+- `triggerRef()`
+- `markRaw()`
+- `shallowRef()` and `shallowReactive()`
+- `readonly()` and `isReadonly()`
+- Real-world use cases
+- Performance tips
+
+---
+
+## 🧩 1. `customRef()` – Custom Reactive Behavior
+
+`customRef()` lets you define exactly how a `ref` should track and trigger changes. It's perfect for **debounced** or **throttled** values.
+
+```js
+import { customRef } from 'vue';
+
+function useDebouncedRef(value, delay = 300) {
+  let timeout;
+  return customRef((track, trigger) => ({
+    get() {
+      track();
+      return value;
+    },
+    set(newVal) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        value = newVal;
+        trigger();
+      }, delay);
+    }
+  }));
+}
+```
+
+### ✅ Use Cases:
+- Debounced input fields
+- Throttled search queries
+- Controlled reactivity
+
+---
+
+## 🧩 2. `triggerRef()` – Force Manual Updates
+
+Sometimes, Vue won’t detect changes deep inside a complex object. `triggerRef()` allows you to **force an update**.
+
+```js
+import { shallowRef, triggerRef } from 'vue';
+
+const state = shallowRef({ name: 'Vue' });
+
+function updateName(newName) {
+  state.value.name = newName;
+  triggerRef(state); // 🔥 manually trigger reactive update
+}
+```
+
+### ✅ Use Cases:
+- Force update after internal object change
+- Optimize performance (skip deep watchers)
+- Work with non-reactive libraries
+
+---
+
+## 🧩 3. `markRaw()` – Opt Out of Reactivity
+
+Don’t want Vue to track an object? Use `markRaw()` to **exclude it from the reactive system**.
+
+```js
+import { markRaw } from 'vue';
+
+const chart = markRaw(new Chart(...)); // Chart.js instance won’t be reactive
+```
+
+### ✅ Use Cases:
+- External libraries (Chart.js, Leaflet, etc.)
+- Performance boost by skipping deep reactivity
+- Avoid circular reactivity
+
+---
+
+## 🧩 4. `shallowRef()` and `shallowReactive()`
+
+These work like `ref()` and `reactive()` but **only track the top-level properties**.
+
+```js
+import { shallowRef } from 'vue';
+
+const user = shallowRef({ name: 'Vue' });
+user.value.name = 'Vue 3'; // ❌ not tracked
+user.value = { name: 'Vue 3' }; // ✅ tracked
+```
+
+### ✅ Use Cases:
+- Performance optimization
+- Preventing nested reactivity
+- Integrating with third-party objects
+
+---
+
+## 🧩 5. `readonly()` – Make Data Immutable
+
+Need to **expose data without allowing mutation**? Wrap it in `readonly()`.
+
+```js
+import { reactive, readonly } from 'vue';
+
+const state = reactive({ count: 0 });
+const publicState = readonly(state);
+
+// publicState.count++ ❌ throws error in dev
+```
+
+### ✅ Use Cases:
+- Expose state safely from composables
+- Enforce immutability
+- Public APIs within components or libraries
+
+---
+
+## 🧪 Real-World Scenario: Debounced Search with `customRef()`
+
+```js
+const search = useDebouncedRef('', 400);
+
+watch(search, (val) => {
+  fetchSearchResults(val);
+});
+```
+
+This setup avoids unnecessary API calls on every keystroke — and is perfect for autocomplete inputs or real-time filters.
+
+---
+
+## 🧠 Interview Tips
+
+**"Why would you use markRaw()?"**
+
+> "To exclude an object from Vue’s reactivity system — useful for third-party libraries or non-reactive state like DOM elements."
+
+**"What does customRef() do?"**
+
+> "It lets you define custom behavior for how a ref tracks and triggers updates — ideal for debouncing, throttling, or manual update control."
+
+**"Difference between ref() and shallowRef()?"**
+
+> "`ref()` tracks deeply nested changes, while `shallowRef()` only tracks changes to the top-level value."
+
+---
+
+## ✅ Summary Table
+
+| API              | Purpose                               |
+|------------------|----------------------------------------|
+| `customRef()`     | Create custom reactivity logic         |
+| `triggerRef()`    | Manually trigger update                |
+| `markRaw()`       | Exclude object from reactivity         |
+| `shallowRef()`    | Track only top-level changes           |
+| `shallowReactive()` | Like reactive(), but shallow         |
+| `readonly()`      | Create read-only reactive objects      |
+
+---
+
+## 🔚 Final Thoughts
+
+Vue 3 gives you **full control** over its reactivity system. These advanced tools allow you to:
+
+- Optimize performance
+- Integrate with non-Vue libraries
+- Write more predictable and maintainable code
+
+Mastering them is essential for building **professional-grade Vue applications** — and will definitely impress in interviews and code reviews.
+
+---
+
+**Next Up?**  
+Explore how to build **custom composables** using these tools, or check out our deep dive into **state management with Pinia**!

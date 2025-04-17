@@ -1,0 +1,220 @@
+---
+title: "State Management with Pinia in Vue 3: A Complete Guide"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "pinia", "state management", "composition api", "frontend"]
+description: "Learn how to manage application state in Vue 3 using Pinia. This guide covers Pinia store setup, usage patterns, actions, getters, persistence, and real-world best practices."
+---
+
+State management is a key part of any modern frontend app — and with Vue 3, the go-to solution is **Pinia**.
+
+Pinia is the **official state management library for Vue**, designed to work seamlessly with the Composition API. It’s **type-safe**, **modular**, and **developer-friendly** — a huge improvement over Vuex.
+
+In this post, you'll learn:
+
+- What Pinia is and why use it
+- How to install and set it up
+- Creating and using stores
+- Using getters, actions, and persistence
+- Best practices and real-world tips
+
+---
+
+## 📦 What Is Pinia?
+
+Pinia is the recommended state management solution for Vue 3. It offers:
+
+- Full TypeScript support
+- Composition API integration
+- Modular stores
+- Devtools support
+- SSR compatibility
+
+It’s simpler, more modern, and more intuitive than Vuex.
+
+---
+
+## 🛠 Installation & Setup
+
+### Step 1: Install Pinia
+
+```bash
+npm install pinia
+```
+
+### Step 2: Register Pinia in your app
+
+```js
+// main.js or main.ts
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+
+const app = createApp(App);
+app.use(createPinia());
+app.mount('#app');
+```
+
+---
+
+## 🧱 Creating a Store
+
+Create a `stores/` directory in your project.
+
+```bash
+mkdir src/stores
+touch src/stores/useCounter.js
+```
+
+### Example: `useCounter.js`
+
+```js
+import { defineStore } from 'pinia';
+
+export const useCounter = defineStore('counter', {
+  state: () => ({
+    count: 0,
+  }),
+  getters: {
+    double: (state) => state.count * 2,
+  },
+  actions: {
+    increment() {
+      this.count++;
+    },
+  },
+});
+```
+
+---
+
+## 🧪 Using a Store in a Component
+
+```js
+<template>
+  <div>
+    <p>Count: {{ counter.count }}</p>
+    <p>Double: {{ counter.double }}</p>
+    <button @click="counter.increment">Increment</button>
+  </div>
+</template>
+
+<script setup>
+import { useCounter } from '@/stores/useCounter';
+
+const counter = useCounter();
+</script>
+```
+
+✅ Works reactively  
+✅ No need for mapState/mapActions  
+✅ Composition API friendly
+
+---
+
+## 🔄 Accessing Stores Across Components
+
+Pinia stores are **global**. Once you define and import a store, you can use it anywhere:
+
+```js
+const counter = useCounter();
+counter.increment();
+```
+
+Even across routes, components, and layouts.
+
+---
+
+## 📁 Best Folder Structure
+
+```
+src/
+  stores/
+    useUser.js
+    useCart.js
+    useAuth.js
+```
+
+Keep stores small and focused by feature — not by type (`state`, `action`, etc.)
+
+---
+
+## 🔐 State Persistence (Optional)
+
+Use the `pinia-plugin-persistedstate` package:
+
+```bash
+npm install pinia-plugin-persistedstate
+```
+
+### Setup:
+
+```js
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+```
+
+### Then in your store:
+
+```js
+export const useAuth = defineStore('auth', {
+  state: () => ({
+    token: null,
+  }),
+  persist: true,
+});
+```
+
+✅ Store will persist automatically in `localStorage`.
+
+---
+
+## 🧠 Common Use Cases
+
+| Store Name     | Purpose                              |
+|----------------|---------------------------------------|
+| `useAuth`      | Login state, tokens, user info        |
+| `useCart`      | E-commerce cart logic                 |
+| `useTheme`     | Theme toggle, dark mode               |
+| `useCounter`   | Simple demo or test logic             |
+| `useSettings`  | App-wide settings or config           |
+
+---
+
+## 🧠 Interview Tip
+
+**"Why use Pinia over Vuex?"**
+
+> "Pinia offers a simpler API, supports the Composition API, is type-safe out of the box, and integrates better with Vue 3. It removes much of the boilerplate we saw in Vuex."
+
+**"How do you structure stores in large apps?"**
+
+> "By feature. Each feature/module gets its own file in the `stores/` folder, keeping logic isolated and maintainable."
+
+---
+
+## 📌 Summary
+
+| Feature        | Pinia                           |
+|----------------|----------------------------------|
+| Vue 3 Ready    | ✅ Yes                           |
+| TypeScript     | ✅ Built-in support              |
+| Modular Stores | ✅ DefineStore pattern           |
+| Devtools       | ✅ Full Vue Devtools integration |
+| Persistence    | ✅ With plugin                   |
+| Composition API | ✅ Seamless                     |
+
+---
+
+## ✅ Final Thoughts
+
+Pinia is the **state management tool Vue 3 deserves** — clean, modern, and easy to use.
+
+Whether you’re building a small app or a large SPA, Pinia will help you manage your state in a way that’s predictable, performant, and scalable.
+
+---
+
+**Next Up?**  
+Check out our guides on **building Composables that integrate with Pinia**, or **advanced store patterns like dynamic modules and cross-store interaction**.

@@ -1,0 +1,180 @@
+---
+title: "Vue 3 Composables: Reuse Logic the Smart Way"
+date: "2025-04-15"
+category: "VueJs"
+tags: ["vuejs", "vue 3", "composition api", "composables", "frontend", "code reuse"]
+description: "Learn how to use Vue 3 Composables to organize and reuse logic across components. This guide covers how to write, use, and structure composables with real-world examples and best practices."
+---
+
+When building Vue 3 applications, it's common to encounter repeated logic — fetching data, validating input, syncing state, etc.
+
+Instead of repeating the same code in multiple components, Vue 3 offers a smarter solution: **Composables**.
+
+In this guide, you'll learn:
+
+- What Composables are
+- How to create and use them
+- Real-world examples
+- Best practices and naming conventions
+- Why they're better than mixins
+
+---
+
+## 🧠 What Are Composables?
+
+**Composables** are simply **reusable functions** that use Vue's **Composition API** features like `ref`, `reactive`, `computed`, `watch`, and lifecycle hooks.
+
+They allow you to extract and reuse logic across components, in a clean and consistent way.
+
+> Think of them as the Composition API’s version of mixins — but better, cleaner, and more flexible.
+
+---
+
+## ⚙️ Basic Composable Example
+
+Let’s create a simple composable to manage a counter.
+
+### `useCounter.js`
+
+```js
+import { ref } from 'vue';
+
+export function useCounter() {
+  const count = ref(0);
+  const increment = () => count.value++;
+  const decrement = () => count.value--;
+
+  return { count, increment, decrement };
+}
+```
+
+### Use in a component
+
+```js
+import { useCounter } from '@/composables/useCounter';
+
+export default {
+  setup() {
+    const { count, increment, decrement } = useCounter();
+    return { count, increment, decrement };
+  }
+}
+```
+
+✅ Logic is reusable  
+✅ Component stays clean
+
+---
+
+## 📦 Real-World Composable: useFetch
+
+Let’s build a simple API fetching composable.
+
+### `useFetch.js`
+
+```js
+import { ref, onMounted } from 'vue';
+
+export function useFetch(url) {
+  const data = ref(null);
+  const error = ref(null);
+  const loading = ref(true);
+
+  const fetchData = async () => {
+    loading.value = true;
+    try {
+      const res = await fetch(url);
+      data.value = await res.json();
+    } catch (err) {
+      error.value = err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  onMounted(fetchData);
+
+  return { data, error, loading, refetch: fetchData };
+}
+```
+
+Use it like this:
+
+```js
+const { data, error, loading, refetch } = useFetch('/api/posts');
+```
+
+---
+
+## 📁 Where to Store Composables
+
+By convention, create a `composables/` directory in your project:
+
+```
+src/
+  composables/
+    useCounter.js
+    useAuth.js
+    useFetch.js
+```
+
+Use PascalCase or camelCase file names with the `useX` naming style.
+
+---
+
+## 💡 Benefits of Using Composables
+
+- **Logic Reuse**: DRY (Don’t Repeat Yourself)
+- **Better Structure**: Clean up large components
+- **Testability**: Easy to unit test isolated logic
+- **Flexibility**: Works in any component
+- **No Side Effects**: Unlike mixins, no magic context
+
+---
+
+## 🔁 Composables vs Mixins
+
+| Feature           | Mixins         | Composables     |
+|------------------|----------------|------------------|
+| Reusability      | ✅              | ✅               |
+| Clear data flow  | ❌ (confusing) | ✅               |
+| TypeScript support| ❌             | ✅               |
+| Conflicts        | Common         | Avoidable        |
+| IDE IntelliSense | Poor           | Excellent        |
+
+Composables are the future of code reuse in Vue.
+
+---
+
+## 🧪 Tips for Writing Good Composables
+
+- Prefix with `use` (e.g., `useForm`, `useUser`)
+- Return only what’s needed (no clutter)
+- Keep them **pure** (no UI manipulation)
+- Use inside `setup()` — never in lifecycle hooks outside setup
+- You can even compose composables from other composables!
+
+---
+
+## 🧠 Interview Insights
+
+**"What are Vue composables?"**
+
+> "Composable functions encapsulate logic using Composition API features like `ref`, `watch`, and `computed`. They let us reuse logic across components in a clean, functional style."
+
+**"When would you use a composable?"**
+
+> "Whenever I need to reuse logic like form validation, data fetching, authentication — anywhere that DRYing up code makes sense."
+
+---
+
+## ✅ Final Thoughts
+
+Vue 3 Composables are a game-changer for organizing, sharing, and reusing logic in your app. They’re **powerful, scalable**, and easy to maintain.
+
+Say goodbye to bloated components and messy mixins — and hello to clean, modular logic.
+
+---
+
+**Next Up?**  
+Dive deeper into `ref` vs `reactive`, or learn how to combine composables into a custom **Vue Plugin**.

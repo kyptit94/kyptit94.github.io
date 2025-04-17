@@ -1,0 +1,192 @@
+---
+title: "Understanding the Vue 3 Lifecycle Hooks: A Complete Guide"
+category: "VueJs"
+date: "2025-04-15"
+tags: ["vuejs", "vue 3", "lifecycle hooks", "composition api", "frontend", "interview"]
+description: "Master Vue 3 lifecycle hooks with this detailed guide. Learn how each hook works in both Composition and Options API, and how to use them effectively in real-world apps and interviews."
+---
+
+Vue 3 is a modern, powerful frontend framework built for scalability and developer experience. One of its key features is the **lifecycle hook system**—a series of events triggered throughout a component's existence.
+
+Whether you're preparing for an interview or working on a large-scale SPA, understanding **Vue 3 lifecycle hooks** is essential.
+
+In this guide, we'll cover:
+
+- What lifecycle hooks are
+- The full lifecycle flow in Vue 3
+- How to use lifecycle hooks in Composition and Options API
+- Practical use cases and tips
+
+---
+
+## 🧠 What Are Lifecycle Hooks?
+
+Lifecycle hooks are **functions** that get called at **specific stages** of a component’s lifecycle—from creation to destruction.
+
+This includes phases like:
+
+- Before/after mounting
+- Before/after updating
+- Before unmounting
+
+Each phase gives you a chance to **hook into the lifecycle** and perform side effects (e.g., fetching data, cleanup, subscriptions, etc.).
+
+---
+
+## 🔄 Vue 3 Lifecycle Flow (Simplified)
+
+1. `setup()` (Composition API only)
+2. `beforeCreate` *(Options API)*
+3. `created`
+4. `beforeMount`
+5. `mounted`
+6. `beforeUpdate`
+7. `updated`
+8. `beforeUnmount`
+9. `unmounted`
+
+---
+
+## ⚙️ Lifecycle Hooks in the Composition API
+
+In Vue 3's Composition API, you use lifecycle hooks from the `vue` package directly in the `setup()` function:
+
+```ts
+import { onMounted, onUnmounted, onUpdated } from 'vue';
+
+export default {
+  setup() {
+    onMounted(() => {
+      console.log('Component mounted');
+    });
+
+    onUnmounted(() => {
+      console.log('Component destroyed');
+    });
+
+    onUpdated(() => {
+      console.log('Component updated');
+    });
+  }
+};
+```
+
+---
+
+## 📘 Lifecycle Hooks in the Options API
+
+If you're using the classic `data`, `methods`, `mounted` format:
+
+```js
+export default {
+  data() {
+    return {
+      count: 0
+    };
+  },
+  mounted() {
+    console.log('Component mounted');
+  },
+  updated() {
+    console.log('Component updated');
+  },
+  beforeUnmount() {
+    console.log('Cleaning up...');
+  }
+};
+```
+
+Vue 3 supports both APIs — use the one that fits your style or project.
+
+---
+
+## 🧪 Common Lifecycle Hooks and Use Cases
+
+| Hook            | When It Runs                         | Common Use Case                        |
+|------------------|---------------------------------------|-----------------------------------------|
+| `onMounted`      | After the component is mounted        | API calls, event listeners              |
+| `onBeforeMount`  | Just before mounting begins           | Logging, initial state setup            |
+| `onUpdated`      | After reactive data causes re-render  | DOM manipulation, side effects cleanup  |
+| `onBeforeUnmount`| Just before the component is removed  | Remove event listeners, clear timers    |
+| `onUnmounted`    | After the component is destroyed      | Final cleanup, disconnect sockets       |
+
+---
+
+## 🧩 Example: API Call on Mount
+
+```ts
+import { ref, onMounted } from 'vue';
+
+export default {
+  setup() {
+    const users = ref([]);
+
+    onMounted(async () => {
+      const res = await fetch('/api/users');
+      users.value = await res.json();
+    });
+
+    return { users };
+  }
+}
+```
+
+---
+
+## 🔄 Using Watchers with Lifecycle
+
+You can also combine lifecycle with `watch` for reactive control:
+
+```ts
+import { ref, watch } from 'vue';
+
+const count = ref(0);
+
+watch(count, (newVal, oldVal) => {
+  console.log(`Count changed from ${oldVal} to ${newVal}`);
+});
+```
+
+This runs whenever `count` changes — works great with `onMounted` or `onUpdated`.
+
+---
+
+## 🧠 Interview Tips
+
+**"What's the difference between `mounted` and `onMounted`?"**
+
+> "`mounted` is used in Options API. `onMounted` is used in Composition API within `setup()`."
+
+**"When should you clean up listeners?"**
+
+> "Inside `onBeforeUnmount` or `onUnmounted` to avoid memory leaks."
+
+**"What can you do in `onMounted`?"**
+
+> "Trigger API calls, subscribe to services, or manipulate the DOM."
+
+---
+
+## 📌 Summary Table
+
+| Phase             | Composition API Hook | Options API Hook     |
+|-------------------|----------------------|-----------------------|
+| Before mount      | `onBeforeMount`      | `beforeMount()`       |
+| After mount       | `onMounted`          | `mounted()`           |
+| Before update     | `onBeforeUpdate`     | `beforeUpdate()`      |
+| After update      | `onUpdated`          | `updated()`           |
+| Before unmount    | `onBeforeUnmount`    | `beforeUnmount()`     |
+| After unmount     | `onUnmounted`        | `unmounted()`         |
+
+---
+
+## ✅ Final Thoughts
+
+Understanding Vue 3 lifecycle hooks is a must-have skill for building scalable apps and performing precise logic at key moments in your components.
+
+It also helps you write cleaner, better-organized, and more testable Vue code.
+
+---
+
+**Next Up?**  
+Check out our posts on **Vue 3 Composition API vs Options API**, **Vue Reactivity System**, and **State Management with Pinia** to become a complete Vue expert.
