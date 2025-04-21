@@ -14,7 +14,7 @@ const projects = [
   {
     title: 'VNPT OneBSS',
     description: 'The ERP system for VNPT, using to manage all business processes',
-    tags: ['React'],
+    tags: ['React', 'Vuejs'],
     image: '/assets/info/onebss.png',
     link: 'https://onebss.vnpt.vn',
   },
